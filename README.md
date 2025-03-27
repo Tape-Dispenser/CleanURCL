@@ -15,5 +15,4 @@ This means that, all URCL projects should specify the exact version of URCL they
 If there are any errors or contradictions between this documentation and any other documentation for URCL, the offical version found here should be defined as the correct version.
 
 ## Links
-* [URCL Discord](https://discord.gg/Nv8jzWg5j8)
 * [Google Sheet Documentation](https://docs.google.com/spreadsheets/d/1YUCj-J1KTTxho59_RsKWj9JZa96_mLqB-j_kK2pjqM8/edit?usp=sharing)
