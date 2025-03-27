@@ -1,4 +1,4 @@
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Discord Banner 2](https://discord.com/api/guilds/758395778376532059/widget.png)](https://discord.com/invite/Nv8jzWg5j8)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # URCL
 All official URCL documentation can be found in the `Release` folder, these are **.md** and **.pdf** files.
