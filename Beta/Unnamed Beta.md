@@ -322,9 +322,23 @@ For example:
 `~+2` is a relative number that is positive 2.
 
 #### *Ports*
-Ports are prefixed with `%`. For example:
+Ports can be written to and read from and are usually used to communicate with devices connected to a corresponding port. The format used for accessing ports goes as `IN%<PORT_NAME> X` or `OUT%<PORT_NAME> X` where X is register or value. For example:
 
-`%TEXT` refers to a port called “TEXT”
+`OUT%TEXT X` outputs the data specified by operand X to the port labeled as `TEXT`.
+
+Unlike operands that come after instructions, every port acts as its own individual function and should be parsed as one by compilers. This behaviour for one is easier to parse and more importantly allows for every port acessed to be translated differently to fit its needs.
+
+For example, imagine a system that supports printing numbers to console by using `OUT%UINT X` (X is a placeholder for a register). If the programmer wanted to now print signed values, then the instruction `OUT%INT X` can be translated to:
+```
+PSH X           ; Save X
+BRP ~+3 X       ; Skip the next 2 instructions if X is positive
+OUT%TEXT '-'    ; Output negative sign to console
+ABS X X         ; Get absolute value of X
+OUT%UINT        ; Print X as unsigned
+POP X           ; Load orignal X value to be used for the instructions following "OUT%INT X"
+``` 
+
+While both `OUT%UINT X` and `OUT%INT X` are outputting a value to a port, the instructions get translated to completely different pieces of code. This is why it is more important to differentiate ports from eachother. Accessing ports result is very different machine code depending on which ports you are accessing and should be compiled as different instructions to avoid resolving every possible result from only one instruction. 
 
 ### ***Comments***
 Comments in URCL are the same as comments in C. Line comments are denoted using `//`. Multi-line comments are denoted using `/*` and `*/`.
