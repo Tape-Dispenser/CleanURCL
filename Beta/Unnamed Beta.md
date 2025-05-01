@@ -322,7 +322,7 @@ For example:
 `~+2` is a relative number that is positive 2.
 
 #### *Ports*
-Ports can be read from and written to, and are usually used to communicate with hardware devices or I/O components. The syntax for accessing ports is `IN%<PORT_NAME> X` and `OUT%<PORT_NAME> X` where X is a decimal literal or text. For example:
+Ports can be read from and written to, and are usually used to communicate with hardware devices or I/O components. The syntax for accessing ports is `IN%<PORT_NAME> X` and `OUT%<PORT_NAME> X` where PORT_NAME is an numerical value or text. For example:
 
 `OUT%TEXT X` outputs the data specified by operand X to the port labeled as `TEXT`.
 
