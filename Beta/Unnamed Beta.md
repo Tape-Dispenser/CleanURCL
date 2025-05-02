@@ -322,9 +322,11 @@ For example:
 `~+2` is a relative number that is positive 2.
 
 #### *Ports*
-Ports are prefixed with `%`. For example:
+Ports can be read from and written to, and are usually used to communicate with hardware devices or I/O components. The syntax for accessing ports is `IN%<PORT_NAME> X` and `OUT%<PORT_NAME> X` where PORT_NAME is an numerical value or text. For example:
 
-`%TEXT` refers to a port called “TEXT”
+`OUT%TEXT X` outputs the data specified by operand X to the port labeled as `TEXT`.
+
+Unlike operands that come after instructions, every combination of a port with an IO instruction acts as its own individual instruction and should be parsed as one by compilers. This behavior for one is easier to parse and more importantly allows for every port accessed to be translated differently to fit its needs.
 
 ### ***Comments***
 Comments in URCL are the same as comments in C. Line comments are denoted using `//`. Multi-line comments are denoted using `/*` and `*/`.
@@ -2534,17 +2536,17 @@ The IN instruction reads the value on a particular port and writes it into a reg
 | - | - |
 
 #### *Operands*
-IN requires 2 operands.
+IN requires 1 operand.
 
-|**Destination**|**Source1**|**Example**|
-| :-: | :-: | :-: |
-|Register|Port|<pre>IN R1 %RNG</pre>|
+|**Destination**|**Example**|
+| :-: | :-: |
+|Register|<pre>IN%RNG R1</pre>|
 #### *Code Examples*
-    IN R1 %RNG
+    IN%RNG R1
 
 This instruction reads from the port “RNG” (which is defined in the port documentation as a random number generator) and the result is written into register 1.
 
-    IN R2 %7SEG
+    IN%7SEG R2
 
 This instruction reads from the port “7SEG” (which is **not** defined in the port documentation so it should be defined somewhere by the programmer), and the result is written into register 2.
 ### ***OUT***
@@ -2560,18 +2562,18 @@ The OUT instruction reads a value and outputs the result into a specific port.
 | - | - |
 
 #### *Operands*
-OUT requires 2 operands.
+OUT requires 1 operand.
 
-|**Destination**|**Source1**|**Example**|
+|**Source1**|**Example**|
 | :-: | :-: | :-: |
-|Port|Register|<pre>OUT %RNG R1</pre>|
-|Port|Immediate|<pre>OUT %RNG 5</pre>|
+|Register|<pre>OUT%RNG R1</pre>|
+|Immediate|<pre>OUT%RNG 5</pre>|
 #### *Code Examples*
-    OUT %RNG R1
+    OUT%RNG R1
 
 This instruction reads the value in register 1 and writes it into the port “RNG” (which is defined in the port documentation as a random number generator).
 
-    OUT %7SEG 5
+    OUT%7SEG 5
 
 This instruction takes the immediate value 5 and writes it into port “7SEG” (which is **not** defined in the port documentation so it should be defined somewhere by the programmer).
 # **INSTRUCTION TRANSLATIONS**
@@ -3226,7 +3228,7 @@ This is a lot slower than running compiled code but can offer some advantages, s
         IMM R3 5        // buzz counter = 5
 
     .loop
-        OUT %TEXT '\n'   // draw a new line character to the char display
+        OUT%TEXT '\n'   // draw a new line character to the char display
         INC R1 R1
         IMM R4 0        // R4 is used to tell if fizz activated
         DEC R2 R2
@@ -3241,18 +3243,18 @@ This is a lot slower than running compiled code but can offer some advantages, s
 
     .fizz
         IMM R4 1        // R4 = 1
-        OUT %TEXT 'F'   // draw "FIZZ" on the char display
-        OUT %TEXT 'I'
-        OUT %TEXT 'Z'
-        OUT %TEXT 'Z'
+        OUT%TEXT 'F'    // draw "FIZZ" on the char display
+        OUT%TEXT 'I'
+        OUT%TEXT 'Z'
+        OUT%TEXT 'Z'
         IMM R2 3        // fizz counter = 3
         JMP .return
 
     .buzz
-        OUT %TEXT 'B'   // draw "BUZZ" on the char display
-        OUT %TEXT 'U'
-        OUT %TEXT 'Z'
-        OUT %TEXT 'Z'
+        OUT%TEXT 'B'    // draw "BUZZ" on the char display
+        OUT%TEXT 'U'
+        OUT%TEXT 'Z'
+        OUT%TEXT 'Z'
         IMM R3 5        // buzz counter = 5
         JMP .loop
 
@@ -3272,11 +3274,11 @@ This is a lot slower than running compiled code but can offer some advantages, s
     .setup
         MOV R2 R0                      // R2 = list pointer
     .rng
-        IN R1 %RNG                 // R1 = random number
+        IN%RNG R1                      // R1 = random number
         STR R2 R1
         INC R2 R2
-        OUT %TEXT '\n'
-        OUT %TEXT R1
+        OUT%TEXT '\n'
+        OUT%TEXT R1
         BNE .rng R2 5              // stop when 5 numbers have been generated
     .main
         MOV R5 R0                      // R5 = switch check
@@ -3294,8 +3296,8 @@ This is a lot slower than running compiled code but can offer some advantages, s
         MOV R1 R0                  // R1 = pointer for printing outputs
         .outLoop
             LOD R2 R1
-            OUT %TEXT '\n'
-            OUT %TEXT R2
+            OUT%TEXT '\n'
+            OUT%TEXT R2
             INC R1 R1
             BNE .outLoop R1 5      // loop until all 5 values are printed
         HLT
